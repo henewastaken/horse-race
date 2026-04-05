@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import SingleRacer from './SingleRacer';
-
 export interface RacerData {
     id: string | number;
     name: string;
     src: string;
     baseSpeed: number;
     volatility: number;
+    movementStyle?: 'smooth' | 'arcade'; // <--- ADD THIS
+    paceInterval?: number;               // <--- ADD THIS
 }
 
 export interface RaceTrackProps {
@@ -87,6 +88,8 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({ racers, onRaceComplete }) 
                         finishLineDistance={finishLine}
                         onFinish={handleFinish}
                         resetTrigger={resetTrigger} // NEW: Passing the soft reset trigger
+                        movementStyle={racer.movementStyle} // <--- ADD THIS
+                        paceInterval={racer.paceInterval}   // <--- ADD THIS
                     />
                 ))}
             </div>
