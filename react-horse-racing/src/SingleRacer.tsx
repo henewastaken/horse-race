@@ -6,8 +6,9 @@ export interface SingleRacerProps {
   baseSpeed?: number;
   volatility?: number;
   isRunning?: boolean;
-  finishLineDistance: number; // How far to run (in pixels)
-  onFinish?: (id: string | number) => void; // Callback when crossing the line
+  finishLineDistance: number;
+  onFinish?: (id: string | number) => void;
+  resetTrigger: number; // NEW: Watches for reset commands
 }
 
 const SingleRacer: React.FC<SingleRacerProps> = ({
@@ -17,34 +18,41 @@ const SingleRacer: React.FC<SingleRacerProps> = ({
   volatility = 1,
   isRunning = false,
   finishLineDistance,
-  onFinish
+  onFinish,
+  resetTrigger
 }) => {
   const horseRef = useRef<HTMLImageElement>(null);
   const positionRef = useRef<number>(0);
   const animationRef = useRef<number>(0);
-
-  // Track if this specific horse has finished so we don't fire the callback 60 times a second!
   const hasFinishedRef = useRef<boolean>(false);
 
+  // NEW: The Soft Reset Listener
+  useEffect(() => {
+    // When the parent changes the trigger, reset all internal refs to 0
+    positionRef.current = 0;
+    hasFinishedRef.current = false;
+
+    // Instantly snap the DOM element back to the start
+    if (horseRef.current) {
+      horseRef.current.style.transform = `translateX(0px)`;
+    }
+  }, [resetTrigger]);
+
   const animate = () => {
-    // Stop animating if already finished
     if (hasFinishedRef.current) return;
 
     const randomBoost = (Math.random() * volatility);
     positionRef.current += baseSpeed + randomBoost;
 
-    // Check if we crossed the finish line
     if (positionRef.current >= finishLineDistance) {
-      positionRef.current = finishLineDistance; // Snap exactly to the line
+      positionRef.current = finishLineDistance;
 
       if (horseRef.current) {
         horseRef.current.style.transform = `translateX(${positionRef.current}px)`;
       }
 
       hasFinishedRef.current = true;
-      if (onFinish) {
-        onFinish(id); // Tell the parent we finished!
-      }
+      if (onFinish) onFinish(id);
       return;
     }
 
