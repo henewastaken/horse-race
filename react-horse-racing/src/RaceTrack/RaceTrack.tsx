@@ -24,8 +24,9 @@ export interface RacerData {
 
 export interface RaceTrackProps {
     racers: RacerData[];
+    theme?: TrackTheme;
     onRaceComplete?: (leaderboard: RacerData[]) => void;
-    theme?: TrackTheme; // Expose the theme prop
+    onLeaderboardUpdate?: (currentLeaderboard: RacerData[]) => void;
 }
 
 // Set the default look so the track works out-of-the-box
@@ -37,7 +38,7 @@ const DEFAULT_THEME: TrackTheme = {
     buttonBackground: '#2c3e50',
 };
 
-const RaceTrack: React.FC<RaceTrackProps> = ({ racers, onRaceComplete, theme }) => {
+const RaceTrack: React.FC<RaceTrackProps> = ({ racers, theme, onRaceComplete, onLeaderboardUpdate }) => {
     const trackRef = useRef<HTMLDivElement>(null);
 
     const [isRunning, setIsRunning] = useState(false);
@@ -64,24 +65,32 @@ const RaceTrack: React.FC<RaceTrackProps> = ({ racers, onRaceComplete, theme }) 
         }
     }, []);
 
-    const handleToggleRun = () => setIsRunning(!isRunning);
+    const handleToggleRun = () => setIsRunning(prev => !prev);
 
     const handleReset = () => {
         setIsRunning(false);
         setFinishedIds([]);
         setResetTrigger(prev => prev + 1);
+        if (onLeaderboardUpdate) onLeaderboardUpdate([]); // Clear parent leaderboard on reset!
     };
 
     const handleFinish = (id: string | number) => {
         setFinishedIds((prev) => {
             const newLeaderboard = [...prev, id];
+            // Map the full objects right now
+            const currentResults = newLeaderboard.map(
+                finishedId => racers.find(r => r.id === finishedId)!
+            );
+
+            // Report to the parent in real-time!
+            if (onLeaderboardUpdate) {
+                onLeaderboardUpdate(currentResults);
+            }
+
             if (newLeaderboard.length === racers.length) {
                 setIsRunning(false);
                 if (onRaceComplete) {
-                    const finalResults = newLeaderboard.map(
-                        finishedId => racers.find(r => r.id === finishedId)!
-                    );
-                    onRaceComplete(finalResults);
+                    onRaceComplete(currentResults);
                 }
             }
             return newLeaderboard;
@@ -122,18 +131,6 @@ const RaceTrack: React.FC<RaceTrackProps> = ({ racers, onRaceComplete, theme }) 
                     />
                 ))}
             </div>
-
-            {finishedIds.length > 0 && (
-                <div className="leaderboard-panel">
-                    <h3 style={{ margin: '0 0 10px 0' }}>Results:</h3>
-                    <ol className="leaderboard-list">
-                        {finishedIds.map(id => {
-                            const racer = racers.find(r => r.id === id);
-                            return <li key={id}>{racer?.name}</li>;
-                        })}
-                    </ol>
-                </div>
-            )}
         </div>
     );
 };
