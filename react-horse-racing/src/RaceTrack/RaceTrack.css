@@ -1,0 +1,62 @@
+/* src/RaceTrack.css */
+
+.game-wrapper {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.control-panel {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.control-button {
+  padding: 10px 20px;
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+
+.control-button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.control-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.track-area {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+  background-color: var(--track-bg); 
+  border: var(--track-border);
+}
+
+/* Checkered Finish Line using dynamic colors */
+.finish-line-visual {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background-image: 
+    repeating-linear-gradient(45deg, var(--finish-color) 25%, transparent 25%, transparent 75%, var(--finish-color) 75%, var(--finish-color)), 
+    repeating-linear-gradient(45deg, var(--finish-color) 25%, rgba(255,255,255,0.8) 25%, rgba(255,255,255,0.8) 75%, var(--finish-color) 75%, var(--finish-color));
+  background-position: 0 0, 10px 10px;
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+.leaderboard-panel {
+  margin-top: 20px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}

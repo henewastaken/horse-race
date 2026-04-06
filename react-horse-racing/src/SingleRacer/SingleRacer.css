@@ -1,0 +1,34 @@
+/* src/SingleRacer.css */
+
+.racer-lane {
+  width: 100%;
+  padding: 10px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 70px; 
+  /* UPDATED: Dynamic Lane Dividers */
+  border-bottom: var(--lane-divider);
+}
+
+.racer-wrapper {
+  position: absolute;
+  left: 0;
+  will-change: transform;
+  z-index: 2;
+}
+
+.racer-image {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+
+.galloping {
+  animation: wiggle 0.3s infinite alternate ease-in-out;
+}
+
+@keyframes wiggle {
+  0% { transform: rotate(-10deg) translateY(2px); }
+  100% { transform: rotate(10deg) translateY(-2px); }
+}
