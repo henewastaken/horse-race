@@ -1,0 +1,45 @@
+.app-container {
+  padding: 40px;
+  background-color: #e9ecef;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.app-title {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #2c3e50;
+}
+
+.app-layout {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.app-main-content {
+  flex-grow: 1;
+  /* Prevents the flex child from shrinking too much on small screens */
+  min-width: 0; 
+}
+
+.app-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+/* Make it Mobile Responsive! */
+@media (max-width: 800px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  
+  .app-sidebar {
+    width: 100%;
+  }
+  
+  .app-container {
+    padding: 20px;
+  }
+}
